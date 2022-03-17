@@ -219,15 +219,18 @@ elif adminonly:
 
 
 def clean():
-    with open(outfile, 'r') as file:
-        lines = file.readlines()
+    try:
+        with open(outfile, 'r') as file:
+            lines = file.readlines()
 
-    with open(outfile, 'w') as file:
-        for line in lines:
-            if line.find("proxychains") != -1:
-                pass
-            else:
-                file.write(line)
+        with open(outfile, 'w') as file:
+            for line in lines:
+                if line.find("proxychains") != -1:
+                    pass
+                else:
+                    file.write(line)
+    except OSError as e:
+        print("No ouptut to clean")
 
 
 clean()
