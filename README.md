@@ -23,6 +23,7 @@ So have you ever felt too lazy to **explore all shares, loggedin users, sessions
         Optional arguments:
                 -h, --help              shows this help message and exits
                 -e, --exclude           exludes ips listed in the file checked_ips.txt
+                -q, --quiet		        hide proxychains output
                 -A, --adminonly         only executes the command if the user is local admin on the IP
                 -o, --outfile           saves output to file provided
                                         (example: python3 ntlmrelayx2proxychains.py -a lsa -o outfile.txt)

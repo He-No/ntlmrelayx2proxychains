@@ -10,6 +10,7 @@ import sys
 action = ''
 exclude = False
 adminonly = False
+quietmode = False
 ip_loc = 4
 username_loc = 5
 admin_loc = 6
@@ -32,6 +33,7 @@ def usage():
     print("")
     print('Optional arguments:')
     print('	-h, --help		shows this help message and exits')
+    print('	-q, --quiet		hide proxychains output')
     print('	-e, --exclude		excludes ips listed in the file checked_ips.txt')
     print('	-A, --adminonly		only executes the command if the user is local admin on the IP')
     print('        -o, --outfile           saves output to file provided')
@@ -66,7 +68,11 @@ def getUsername():
 
 def execute_cmd():
     print('')
-    cmd = 'proxychains crackmapexec smb -u "' + username + '" -p "" -d ' + domain + ' ' + ip + ' --' + action
+    if quietmode:
+        quiet = '-q'
+    else:
+        quiet = ''
+    cmd = 'proxychains' + quiet + ' crackmapexec smb -u "' + username + '" -p "" -d ' + domain + ' ' + ip + ' --' + action
     if outfile != '':
         print(outfile)
         cmd = cmd + ' | tee -a ' + outfile
@@ -160,7 +166,7 @@ def adminRun():
 
 
 # Defining arguments
-options, args = getopt.getopt(sys.argv[1:], 'a:eAo:h', ['action=', 'exclude', 'adminonly', 'outfile=', 'help'])
+options, args = getopt.getopt(sys.argv[1:], 'a:eAo:qh', ['action=', 'exclude', 'adminonly', 'outfile=', 'quiet', 'help'])
 for opt, arg in options:
     if opt in ('-a', '--action'):
         run = True
@@ -171,6 +177,8 @@ for opt, arg in options:
         adminonly = True
     elif opt in ('-o', '--outfile'):
         outfile = arg
+    elif opt in ('-q', '--quiet'):
+        quietmode = True
     elif opt in ('-h', '--help'):
         usage()
 
