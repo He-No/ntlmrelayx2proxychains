@@ -69,7 +69,7 @@ def getUsername():
 def execute_cmd():
     print('')
     if quietmode:
-        quiet = '-q'
+        quiet = ' -q'
     else:
         quiet = ''
     cmd = 'proxychains' + quiet + ' crackmapexec smb -u "' + username + '" -p "" -d ' + domain + ' ' + ip + ' --' + action
