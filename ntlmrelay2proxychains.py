@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # Imports
+from shlex import quote
 import getopt
 import json
 import linecache
@@ -76,8 +77,8 @@ def execute_cmd():
     if outfile != '':
         print(outfile)
         cmd = cmd + ' | tee -a ' + outfile
-    print(cmd)
-    os.system(cmd)
+    print(quote(cmd).replace("'",""))
+    os.system(quote(cmd).replace("'",""))
     
 
 def getDomain():
